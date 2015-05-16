@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Hello Message</title>
+    <script src="react.min.js"></script>
+    <script src="reactor.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+
+<script type="text/javascript">
+
+var HelloMessage = Reactor.createClass({
+    jml: function() {
+        return ["div","Hello "].concat(this.props.children);
+    }
+});
+
+Reactor.render([HelloMessage, "John"], document.getElementById('content'));
+
+</script>
+
+  </body>
+</html>

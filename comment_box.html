@@ -1,0 +1,84 @@
+<html>
+  <head>
+    <title>Comment Box</title>
+    <script src="react.min.js"></script>
+    <script src="reactor.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+
+<script type="text/javascript">
+
+var Comment = Reactor.createClass({
+    jml: function() {
+        return ["div",["h2", this.props.author, ":"]].concat(this.props.children);
+    }
+});
+
+var CommentList = Reactor.createClass({
+    jml: function() {
+        var commentNodes = this.props.data.map(function(comment) {
+            return [Comment, {author:comment.author}, comment.text];
+        });
+
+        return ["div"].concat(commentNodes);
+    }
+});
+
+var Space = Reactor.createClass({
+    jml:function() {
+        return ["div", ["br"]];
+    }
+});
+
+var CommentForm = Reactor.createClass({
+    handleSubmit: function(e) {
+        e.preventDefault();
+        var author = React.findDOMNode(this.refs.author).value.trim();
+        var text = React.findDOMNode(this.refs.text).value.trim();
+        if (!text || !author) {
+          return;
+        }
+        
+        this.props.onCommentSubmit({author: author, text: text});
+        React.findDOMNode(this.refs.author).value = '';
+        React.findDOMNode(this.refs.text).value = '';
+        return;
+    },
+
+    jml: function() {
+        return ["div",["br"],
+            ["form", {onSubmit:this.handleSubmit},
+                ["input",{ref:"author"}],
+                [Space],
+                ["textarea",{ref:"text"}],
+                [Space],
+                ["button","Submit"]
+            ]
+        ];
+    }
+})
+
+var CommentBox = Reactor.createClass({
+    getInitialState: function() {
+      return {data: []};
+    },
+    handleCommentSubmit: function(comment) {
+        var comments = this.state.data;
+        var newComments = comments.concat([comment]);
+        this.setState({data: newComments});
+    },
+    jml: function() {
+        return ["div",["h1", "Comments"],
+            [CommentList, {data: this.state.data}],
+            [CommentForm, {onCommentSubmit: this.handleCommentSubmit}]
+        ];
+    }
+});
+
+Reactor.render([CommentBox], document.getElementById('content'));
+
+</script>
+
+  </body>
+</html>
